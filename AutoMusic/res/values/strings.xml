@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, AutoMusicActivity!</string>
     <string name="app_name">AutoMusic</string>
+    <string name="serviceRadioDisplay">Auto play music when wired headphones are inserted</string>
 
 </resources>
