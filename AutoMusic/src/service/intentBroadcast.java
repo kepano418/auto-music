@@ -22,9 +22,12 @@ public class intentBroadcast extends BroadcastReceiver {
 			database.open();
 			Cursor c = database.getOption(DataHandler.OPTION_START_ON_BOOT);
 			c.moveToFirst();
-			if (c.getCount() == 1 && c.getString(0).equals("true")) {
+			if (c.getCount() == 1
+					&& c.getString(
+							c.getColumnIndex(DataHandler.TABLE_COL_VALUE))
+							.equals("true"))
 				context.startService(new Intent(context, detectJack.class));
-			}
+
 			database.close();
 		} else {
 			Bundle b = intent.getExtras();
