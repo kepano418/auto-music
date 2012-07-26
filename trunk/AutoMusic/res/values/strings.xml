@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Auto Start Google Music</string>
     <string name="serviceRadioDisplay">Auto play music when wired headphones are inserted</string>
+    <string name="onBootString">Start on Boot</string>
 </resources>
