@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.kepano.automusic"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="2"
+    android:versionName="1.1" >
 
     <uses-sdk android:minSdkVersion="8" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <application
         android:icon="@drawable/headset"
@@ -26,7 +27,9 @@
             android:enabled="true" >
         </service>
 
-        <receiver android:name="service.intentBroadcast" android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+        <receiver
+            android:name="service.intentBroadcast"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

@@ -7,29 +7,39 @@ import android.util.Log;
 
 public class DataHandler extends SQLiteOpenHelper {
 
-	// Table and Columns
-	public static final String TABLE_NAME = "auto_music";
-	public static final String TABLE_COL_OPTION = "option";
-	public static final String TABLE_COL_VALUE = "value";
+	// Tables and Columns
+	public static final String TABLE_M_NAME = "auto_music";
+	public static final String TABLE_COL_M_OPTION = "option";
+	public static final String TABLE_COL_M_VALUE = "value";
+
+	public static final String TABLE_BT_NAME = "bt";
+	public static final String TABLE_COL_B_ADDR = "address";
 
 	// Options
 	public static final String OPTION_START_ON_BOOT = "onBoot";
+	public static final String OPTION_WIRED = "wired";
+	public static final String OPTION_BT = "bt";
 
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 3;
 	private static final String DATABASE_NAME = "auto_music_app";
 
 	// database creation
-	private static final String DATABASE_CREATE = "CREATE TABLE auto_music ("
-			+ TABLE_COL_OPTION + " text primary key, " + TABLE_COL_VALUE
-			+ " text not null);";
-	private static final String DATABASE_ON_CREATE = "INSERT INTO "
-			+ TABLE_NAME + " ('" + TABLE_COL_OPTION + "', '" + TABLE_COL_VALUE
-			+ "') VALUES ('" + OPTION_START_ON_BOOT + "', 'true')";
+	private static final String DATABASE_CREATE_MAIN = "CREATE TABLE "
+			+ TABLE_M_NAME + " (" + TABLE_COL_M_OPTION + " text primary key, "
+			+ TABLE_COL_M_VALUE + " text not null);";
+	private static final String DATABASE_CREATE_BT = "CREATE TABLE "
+			+ TABLE_BT_NAME + " (" + TABLE_COL_B_ADDR + " text primary key);";
 
+	// database removal
+	private static final String DATABASE_DROP_MAIN = "DROP TABLE "
+			+ TABLE_M_NAME;
+	private static final String DATABASE_DROP_BT = "DROP TABLE "
+			+ TABLE_BT_NAME;
+	
 	@Override
 	public void onCreate(SQLiteDatabase database) {
-		database.execSQL(DATABASE_CREATE);
-		database.execSQL(DATABASE_ON_CREATE);
+		database.execSQL(DATABASE_CREATE_MAIN);
+		database.execSQL(DATABASE_CREATE_BT);
 	}
 
 	public DataHandler(Context context) {
@@ -40,7 +50,14 @@ public class DataHandler extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.e("kepano", "Upgrading data base from " + oldVersion + " to "
 				+ newVersion + "\nWARNING this drops the table");
-		// probably never use this
+		try {
+			db.execSQL(DATABASE_DROP_MAIN);
+		} catch (Exception e) {
+		}
+		try {
+		db.execSQL(DATABASE_DROP_BT);
+		} catch (Exception e) {}
+		onCreate(db);
 	}
 
 }
