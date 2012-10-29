@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import net.kepano.automusic.R;
 import net.kepano.bluetooth.bluetoothObjects;
@@ -34,6 +36,12 @@ public class CustomListAdapter extends ArrayAdapter<bluetoothObjects> {
 		}
 		bluetoothObjects o = items.get(position);
 		if (o != null) {
+			final ImageView img = (ImageView) v.findViewById(R.id.customlisticon);
+			if(o.getAutoStart())
+				img.setImageResource(R.drawable.bluetooth1);
+			else
+				img.setImageResource(R.drawable.bluetooth0);
+
 			TextView tt = (TextView) v.findViewById(R.id.toptext);
 			TextView bt = (TextView) v.findViewById(R.id.bottomtext);
 			if (tt != null) {
@@ -45,5 +53,4 @@ public class CustomListAdapter extends ArrayAdapter<bluetoothObjects> {
 		}
 		return v;
 	}
-
 }

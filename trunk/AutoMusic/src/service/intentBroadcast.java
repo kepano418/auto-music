@@ -1,9 +1,12 @@
 package service;
 
+import java.util.List;
 import java.util.Set;
 
 import net.kepano.database.DBAdapter;
 import net.kepano.database.DataHandler;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -13,6 +16,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 public class intentBroadcast extends BroadcastReceiver {
 	private final String TAG = "kepano";
@@ -37,8 +41,6 @@ public class intentBroadcast extends BroadcastReceiver {
 
 			database.close();
 		} else {
-			Bundle b = intent.getExtras();
-			Intent i;
 			if (detectJack.ACTION_HANDSET.equals(intent.getAction())) {
 				Cursor c = database.getOption(DataHandler.OPTION_WIRED);
 				c.moveToFirst();
@@ -46,12 +48,23 @@ public class intentBroadcast extends BroadcastReceiver {
 						&& c.getString(
 								c.getColumnIndex(DataHandler.TABLE_COL_M_VALUE))
 								.equals("true")) {
+					Bundle b = intent.getExtras();
 					if (b.getInt(HANDSET_STATE) == 1) {
+						Intent i;
 						Log.e(TAG, "head phones attached");
 						i = new Intent("com.android.music.musicservicecommand");
 						i.putExtra("command", "play");
 						context.getApplicationContext().sendBroadcast(i);
-						// context.sendBroadcast(i);
+						try {
+							synchronized (this) {
+								this.wait(3000);
+							}
+							if (!detectIfRunning(context))
+								context.getApplicationContext()
+										.sendBroadcast(i);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 
@@ -62,31 +75,50 @@ public class intentBroadcast extends BroadcastReceiver {
 						&& c.getString(
 								c.getColumnIndex(DataHandler.TABLE_COL_M_VALUE))
 								.equals("true")) {
-					//TODO Need another test for the BT Device itself
-					BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
-							.getDefaultAdapter();
-					if (mBluetoothAdapter != null) {
-						Set<BluetoothDevice> pairedDevices = mBluetoothAdapter
-								.getBondedDevices();
-						if (pairedDevices.size() != 0) {
-							// the device has paired devices
-							for (BluetoothDevice device : pairedDevices) {
-								Log.i(TAG, "device name: " + device.getName());
-								Log.i(TAG,
-										"device address: "
-												+ device.getAddress());
+					Bundle b = intent.getExtras();
+					Object o = b.get(BLUETOOTH_DEVICE);
+					c = database.getBT(o.toString());
+					c.moveToFirst();
+					if (b.getInt(BLUETOOTH_STATE) == 2
+							&& c.getCount() == 1
+							&& c.getString(
+									c.getColumnIndex(DataHandler.TABLE_COL_B_ADDR))
+									.equals(o.toString())) {
+						Intent i;
+						Log.e(TAG, "head phones attached");
+						i = new Intent("com.android.music.musicservicecommand");
+						i.putExtra("command", "play");
+						context.getApplicationContext().sendBroadcast(i);
+						try {
+							synchronized (this) {
+								this.wait(3000);
 							}
-						} else {
-							// no paired devices
-							Log.i(TAG, "no paired devices");
+							if (!detectIfRunning(context))
+								context.getApplicationContext()
+										.sendBroadcast(i);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
 						}
+
 					}
-
 				}
-			}
 
+			}
 		}
 		database.close();
+	}
+
+	private boolean detectIfRunning(Context c) {
+		ActivityManager activityManager = (ActivityManager) c
+				.getSystemService(c.ACTIVITY_SERVICE);
+		List<RunningAppProcessInfo> procInfos = activityManager
+				.getRunningAppProcesses();
+		for (int i = 0; i < procInfos.size(); i++) {
+			if (procInfos.get(i).processName.equals("com.android.music")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

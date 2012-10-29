@@ -46,20 +46,34 @@ public class DBAdapter {
 					+ DataHandler.TABLE_COL_M_VALUE + ") VALUES ('" + v1
 					+ "', '" + v2 + "');";
 		else if (table.equals(DataHandler.TABLE_BT_NAME))
-			sql = "INSERT INTO " + DataHandler.TABLE_BT_NAME + "("
-					+ DataHandler.TABLE_BT_NAME + "\") VALUES ('" + v1 + "');";
+			sql = "INSERT INTO " + DataHandler.TABLE_BT_NAME + " ("
+					+ DataHandler.TABLE_COL_B_ADDR + ") VALUES ('" + v1 + "');";
 		if (!sql.equals(""))
 			db.execSQL(sql);
 	}
 
-	public void clearTable() {
-		db.execSQL("DELETE FROM locks;");
+	public void removeData(String table, String v1, String v2) {
+		String sql = "";
+
+		if (table.equals(DataHandler.TABLE_BT_NAME))
+			sql = "DELETE FROM " + DataHandler.TABLE_BT_NAME + 
+					" WHERE " + DataHandler.TABLE_COL_B_ADDR + "='" +
+					v1 + "';";
+		if (!sql.equals(""))
+			db.execSQL(sql);
 	}
 
 	public Cursor getOption(String option) {
 		return db.query(DataHandler.TABLE_M_NAME,
 				new String[] { DataHandler.TABLE_COL_M_VALUE },
 				DataHandler.TABLE_COL_M_OPTION + "='" + option + "'", null,
+				null, null, null);
+	}
+	
+	public Cursor getBT(String addr) {
+		return db.query(DataHandler.TABLE_BT_NAME,
+				new String[] { DataHandler.TABLE_COL_B_ADDR },
+				DataHandler.TABLE_COL_B_ADDR + "='" + addr + "'", null,
 				null, null, null);
 	}
 }
