@@ -17,19 +17,22 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class AutoMusicActivity extends Activity {
 
 	private ListView lv;
-	
+
 	private DBAdapter database;
 
 	/** Called when the activity is first created. */
@@ -57,7 +60,8 @@ public class AutoMusicActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		((ToggleButton) findViewById(R.id.serviceToggle)).setChecked(isServiceRunning());
+		((ToggleButton) findViewById(R.id.serviceToggle))
+				.setChecked(isServiceRunning());
 		super.onResume();
 	}
 
@@ -103,25 +107,26 @@ public class AutoMusicActivity extends Activity {
 				&& c.getString(c.getColumnIndex(DataHandler.TABLE_COL_M_VALUE))
 						.equals("true"))
 			tb.setChecked(true);
-		else if(c.getCount() == 0)
-			database.insertData(DataHandler.TABLE_M_NAME, DataHandler.OPTION_START_ON_BOOT, "false");
-		
+		else if (c.getCount() == 0)
+			database.insertData(DataHandler.TABLE_M_NAME,
+					DataHandler.OPTION_START_ON_BOOT, "false");
+
 		tb.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				boolean stats = ((ToggleButton) v).isChecked();
 				if (stats) {
-					database.updateOption(DataHandler.TABLE_M_NAME, DataHandler.OPTION_START_ON_BOOT,
-							"true");
+					database.updateOption(DataHandler.TABLE_M_NAME,
+							DataHandler.OPTION_START_ON_BOOT, "true");
 				} else {
-					database.updateOption(DataHandler.TABLE_M_NAME, DataHandler.OPTION_START_ON_BOOT,
-							"false");
+					database.updateOption(DataHandler.TABLE_M_NAME,
+							DataHandler.OPTION_START_ON_BOOT, "false");
 				}
 
 			}
 		});
 	}
-	
-	private void initWiredCheckBox(){
+
+	private void initWiredCheckBox() {
 		ToggleButton tb = (ToggleButton) findViewById(R.id.toggleWired);
 
 		Cursor c = database.getOption(DataHandler.OPTION_WIRED);
@@ -130,25 +135,26 @@ public class AutoMusicActivity extends Activity {
 				&& c.getString(c.getColumnIndex(DataHandler.TABLE_COL_M_VALUE))
 						.equals("true"))
 			tb.setChecked(true);
-		else if(c.getCount() == 0)
-			database.insertData(DataHandler.TABLE_M_NAME, DataHandler.OPTION_WIRED, "false");			
+		else if (c.getCount() == 0)
+			database.insertData(DataHandler.TABLE_M_NAME,
+					DataHandler.OPTION_WIRED, "false");
 
 		tb.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				boolean stats = ((ToggleButton) v).isChecked();
 				if (stats) {
-					database.updateOption(DataHandler.TABLE_M_NAME, DataHandler.OPTION_WIRED,
-							"true");
+					database.updateOption(DataHandler.TABLE_M_NAME,
+							DataHandler.OPTION_WIRED, "true");
 				} else {
-					database.updateOption(DataHandler.TABLE_M_NAME, DataHandler.OPTION_WIRED,
-							"false");
+					database.updateOption(DataHandler.TABLE_M_NAME,
+							DataHandler.OPTION_WIRED, "false");
 				}
 
 			}
 		});
 	}
-	
-	private void initBTCheckBox(){
+
+	private void initBTCheckBox() {
 		ToggleButton tb = (ToggleButton) findViewById(R.id.toggleBluetooth);
 
 		Cursor c = database.getOption(DataHandler.OPTION_BT);
@@ -157,37 +163,74 @@ public class AutoMusicActivity extends Activity {
 				&& c.getString(c.getColumnIndex(DataHandler.TABLE_COL_M_VALUE))
 						.equals("true"))
 			tb.setChecked(true);
-		else if(c.getCount() == 0)
-			database.insertData(DataHandler.TABLE_M_NAME, DataHandler.OPTION_BT, "false");	
-		
+		else if (c.getCount() == 0)
+			database.insertData(DataHandler.TABLE_M_NAME,
+					DataHandler.OPTION_BT, "false");
+
 		tb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
 				if (isChecked) {
-					database.updateOption(DataHandler.TABLE_M_NAME, DataHandler.OPTION_BT,
-							"true");
+					database.updateOption(DataHandler.TABLE_M_NAME,
+							DataHandler.OPTION_BT, "true");
 				} else {
-					database.updateOption(DataHandler.TABLE_M_NAME, DataHandler.OPTION_BT,
-							"false");
+					database.updateOption(DataHandler.TABLE_M_NAME,
+							DataHandler.OPTION_BT, "false");
 				}
 
 			}
 		});
 	}
 
-	
-	private void setBluetoothList(){
+	private void setBluetoothList() {
 		lv = (ListView) findViewById(R.id.bluetoothList);
-		
-		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
+				.getDefaultAdapter();
+		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter
+				.getBondedDevices();
 
 		ArrayList<bluetoothObjects> s = new ArrayList<bluetoothObjects>();
-		for(BluetoothDevice bt : pairedDevices)
-		   s.add(new bluetoothObjects(bt));
+		for (BluetoothDevice bt : pairedDevices) {
+			bluetoothObjects bto = new bluetoothObjects(bt);
 
-		lv.setAdapter(new CustomListAdapter(this, android.R.layout.simple_list_item_1,  s));
+			Cursor c = database.getBT(bt.getAddress());
+			c.moveToFirst();
+			if (c.getCount() == 1
+					&& bt.getAddress()
+							.equals(c.getString(c
+									.getColumnIndex(DataHandler.TABLE_COL_B_ADDR))))
+				bto.setAutoStart(true);
+			s.add(bto);
+		}
+		final CustomListAdapter cAdapter = new CustomListAdapter(this,
+				android.R.layout.simple_list_item_1, s); 
+		lv.setAdapter(cAdapter);
+
+		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> arg0, View arg1,
+					int position, long arg3) {
+
+				bluetoothObjects o = (bluetoothObjects) lv.getItemAtPosition(position);
+				if(o.getAutoStart()){
+					o.setAutoStart(false);
+					database.removeData(DataHandler.TABLE_BT_NAME, o.getAddr(), "");
+				}
+				else{
+					o.setAutoStart(true);
+					database.insertData(DataHandler.TABLE_BT_NAME, o.getAddr(), "");
+				}
+				cAdapter.notifyDataSetChanged();
+				//lv.invalidate();
+				/*
+				 * write you handling code like... String st = "sdcard/"; File f
+				 * = new File(st+o.toString()); // do whatever u want to do with
+				 * 'f' File object
+				 */
+			}
+		});
 
 	}
-	
+
 }

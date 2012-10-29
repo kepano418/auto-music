@@ -6,6 +6,7 @@ public class bluetoothObjects {
 	private String name;
 	private String addr;
 	private int state;
+	private boolean autoStart = false;
 	
 	public bluetoothObjects(BluetoothDevice bt){
 		this.name = bt.getName();
@@ -23,5 +24,13 @@ public class bluetoothObjects {
 	
 	public int getState(){
 		return state;
+	}
+	
+	public boolean getAutoStart(){
+		return autoStart;
+	}
+	
+	public void setAutoStart(boolean value){
+		this.autoStart = value;
 	}
 }
