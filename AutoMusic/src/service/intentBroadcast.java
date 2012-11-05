@@ -50,12 +50,12 @@ public class intentBroadcast extends BroadcastReceiver {
 								.equals("true")) {
 					Bundle b = intent.getExtras();
 					if (b.getInt(HANDSET_STATE) == 1) {
-						Intent i;
+
 						Log.e(TAG, "head phones attached");
-						i = new Intent("com.android.music.musicservicecommand");
-						i.putExtra("command", "play");
-						context.getApplicationContext().sendBroadcast(i);
-						try {
+						
+						sendIt(context);
+						
+						/*try {
 							synchronized (this) {
 								this.wait(3000);
 							}
@@ -64,7 +64,7 @@ public class intentBroadcast extends BroadcastReceiver {
 										.sendBroadcast(i);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
-						}
+						}*/
 					}
 				}
 
@@ -84,18 +84,17 @@ public class intentBroadcast extends BroadcastReceiver {
 							&& c.getString(
 									c.getColumnIndex(DataHandler.TABLE_COL_B_ADDR))
 									.equals(o.toString())) {
-						Intent i;
 						Log.e(TAG, "head phones attached");
-						i = new Intent("com.android.music.musicservicecommand");
-						i.putExtra("command", "play");
-						context.getApplicationContext().sendBroadcast(i);
+
+						sendIt(context);
+						
+						//context.getApplicationContext().sendBroadcast(i);
 						try {
 							synchronized (this) {
 								this.wait(3000);
 							}
 							if (!detectIfRunning(context))
-								context.getApplicationContext()
-										.sendBroadcast(i);
+								sendIt(context);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -119,6 +118,15 @@ public class intentBroadcast extends BroadcastReceiver {
 			}
 		}
 		return false;
+	}
+	
+	private void sendIt(Context context){
+		Intent i;
+		i = new Intent("com.android.music.musicservicecommand");
+		i.putExtra("command", "play");
+		//i.putExtra("device", "local");
+		
+		context.getApplicationContext().sendBroadcast(i);
 	}
 
 }

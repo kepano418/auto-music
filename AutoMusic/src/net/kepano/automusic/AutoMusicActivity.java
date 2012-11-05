@@ -44,6 +44,7 @@ public class AutoMusicActivity extends Activity {
 		database = new DBAdapter(this);
 		database.open();
 
+		//Initialize the data
 		initServiceToggleBox();
 		initOnBootCheckBox();
 		initWiredCheckBox();
@@ -90,6 +91,8 @@ public class AutoMusicActivity extends Activity {
 
 	private void initServiceToggleBox() {
 		ToggleButton tb = (ToggleButton) findViewById(R.id.serviceToggle);
+		
+		//set click to enable or disable service
 		tb.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				serviceControl(((ToggleButton) v).isChecked());
@@ -98,6 +101,7 @@ public class AutoMusicActivity extends Activity {
 		tb.setChecked(isServiceRunning());
 	}
 
+	//give the application ability to auto start service on boot
 	private void initOnBootCheckBox() {
 		ToggleButton tb = (ToggleButton) findViewById(R.id.checkBox_OnBoot);
 
@@ -111,10 +115,10 @@ public class AutoMusicActivity extends Activity {
 			database.insertData(DataHandler.TABLE_M_NAME,
 					DataHandler.OPTION_START_ON_BOOT, "false");
 
+		//gives the ability to turn auto start on boot on or off
 		tb.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				boolean stats = ((ToggleButton) v).isChecked();
-				if (stats) {
+				if (((ToggleButton) v).isChecked()) {
 					database.updateOption(DataHandler.TABLE_M_NAME,
 							DataHandler.OPTION_START_ON_BOOT, "true");
 				} else {
@@ -126,6 +130,7 @@ public class AutoMusicActivity extends Activity {
 		});
 	}
 
+	//allows the user to have it work on a wired headset
 	private void initWiredCheckBox() {
 		ToggleButton tb = (ToggleButton) findViewById(R.id.toggleWired);
 
@@ -135,10 +140,14 @@ public class AutoMusicActivity extends Activity {
 				&& c.getString(c.getColumnIndex(DataHandler.TABLE_COL_M_VALUE))
 						.equals("true"))
 			tb.setChecked(true);
+		
+		//data is not in there
+		//this is handled on first initialize
 		else if (c.getCount() == 0)
 			database.insertData(DataHandler.TABLE_M_NAME,
 					DataHandler.OPTION_WIRED, "false");
 
+		//on click change choice
 		tb.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				boolean stats = ((ToggleButton) v).isChecked();
@@ -163,10 +172,14 @@ public class AutoMusicActivity extends Activity {
 				&& c.getString(c.getColumnIndex(DataHandler.TABLE_COL_M_VALUE))
 						.equals("true"))
 			tb.setChecked(true);
+		
+		//data is not in there
+		//this is handled on first initialize
 		else if (c.getCount() == 0)
 			database.insertData(DataHandler.TABLE_M_NAME,
 					DataHandler.OPTION_BT, "false");
 
+		//on click change choice
 		tb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
@@ -185,6 +198,8 @@ public class AutoMusicActivity extends Activity {
 	private void setBluetoothList() {
 		lv = (ListView) findViewById(R.id.bluetoothList);
 
+		//gets a list of all bluetooth enabled devices
+		//on the phone
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
 				.getDefaultAdapter();
 		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter
@@ -194,6 +209,8 @@ public class AutoMusicActivity extends Activity {
 		for (BluetoothDevice bt : pairedDevices) {
 			bluetoothObjects bto = new bluetoothObjects(bt);
 
+			//see if bluetooth device is already
+			//enabled for auto start
 			Cursor c = database.getBT(bt.getAddress());
 			c.moveToFirst();
 			if (c.getCount() == 1
@@ -207,6 +224,8 @@ public class AutoMusicActivity extends Activity {
 				android.R.layout.simple_list_item_1, s); 
 		lv.setAdapter(cAdapter);
 
+		//set onclick to change the row
+		//also redraw the list so show change
 		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1,
@@ -222,12 +241,6 @@ public class AutoMusicActivity extends Activity {
 					database.insertData(DataHandler.TABLE_BT_NAME, o.getAddr(), "");
 				}
 				cAdapter.notifyDataSetChanged();
-				//lv.invalidate();
-				/*
-				 * write you handling code like... String st = "sdcard/"; File f
-				 * = new File(st+o.toString()); // do whatever u want to do with
-				 * 'f' File object
-				 */
 			}
 		});
 
