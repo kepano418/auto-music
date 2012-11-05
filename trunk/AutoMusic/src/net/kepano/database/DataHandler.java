@@ -6,7 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DataHandler extends SQLiteOpenHelper {
-
+	public static final String TAG = "kepano";
+	
 	// Tables and Columns
 	public static final String TABLE_M_NAME = "auto_music";
 	public static final String TABLE_COL_M_OPTION = "option";
@@ -20,7 +21,7 @@ public class DataHandler extends SQLiteOpenHelper {
 	public static final String OPTION_WIRED = "wired";
 	public static final String OPTION_BT = "bt";
 
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 4;
 	private static final String DATABASE_NAME = "auto_music_app";
 
 	// database creation
@@ -48,16 +49,19 @@ public class DataHandler extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.e("kepano", "Upgrading data base from " + oldVersion + " to "
+		Log.e(TAG, "Upgrading data base from " + oldVersion + " to "
 				+ newVersion + "\nWARNING this drops the table");
 		try {
 			db.execSQL(DATABASE_DROP_MAIN);
+			Log.e(TAG, "Main Table Dropped");
 		} catch (Exception e) {
 		}
 		try {
 		db.execSQL(DATABASE_DROP_BT);
+		Log.e(TAG, "Bluetooth Table Dropped");
 		} catch (Exception e) {}
 		onCreate(db);
+		Log.e(TAG, "All Tables recreated");
 	}
 
 }
