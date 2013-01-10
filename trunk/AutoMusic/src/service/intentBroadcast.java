@@ -52,19 +52,16 @@ public class intentBroadcast extends BroadcastReceiver {
 					if (b.getInt(HANDSET_STATE) == 1) {
 
 						Log.e(TAG, "head phones attached");
-						
+
 						sendIt(context);
-						
-						/*try {
-							synchronized (this) {
-								this.wait(3000);
-							}
-							if (!detectIfRunning(context))
-								context.getApplicationContext()
-										.sendBroadcast(i);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}*/
+
+						/*
+						 * try { synchronized (this) { this.wait(3000); } if
+						 * (!detectIfRunning(context))
+						 * context.getApplicationContext() .sendBroadcast(i); }
+						 * catch (InterruptedException e) { e.printStackTrace();
+						 * }
+						 */
 					}
 				}
 
@@ -87,8 +84,8 @@ public class intentBroadcast extends BroadcastReceiver {
 						Log.e(TAG, "head phones attached");
 
 						sendIt(context);
-						
-						//context.getApplicationContext().sendBroadcast(i);
+
+						// context.getApplicationContext().sendBroadcast(i);
 						try {
 							synchronized (this) {
 								this.wait(3000);
@@ -102,6 +99,39 @@ public class intentBroadcast extends BroadcastReceiver {
 					}
 				}
 
+			} else if(detectJack.ACTION_ICS_BLUETOOTH.equals(intent
+							.getAction())){
+				Cursor c = database.getOption(DataHandler.OPTION_BT);
+				c.moveToFirst();
+				if (c.getCount() == 1
+						&& c.getString(
+								c.getColumnIndex(DataHandler.TABLE_COL_M_VALUE))
+								.equals("true")) {
+					Bundle b = intent.getExtras();
+					Object o = b.get(BLUETOOTH_DEVICE);
+					c = database.getBT(o.toString());
+					c.moveToFirst();
+					if (c.getCount() == 1
+							&& c.getString(
+									c.getColumnIndex(DataHandler.TABLE_COL_B_ADDR))
+									.equals(o.toString())) {
+						Log.e(TAG, "head phones attached");
+
+						sendIt(context);
+
+						// context.getApplicationContext().sendBroadcast(i);
+						try {
+							synchronized (this) {
+								this.wait(3000);
+							}
+							if (!detectIfRunning(context))
+								sendIt(context);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+
+					}
+				}
 			}
 		}
 		database.close();
@@ -119,13 +149,13 @@ public class intentBroadcast extends BroadcastReceiver {
 		}
 		return false;
 	}
-	
-	private void sendIt(Context context){
+
+	private void sendIt(Context context) {
 		Intent i;
 		i = new Intent("com.android.music.musicservicecommand");
 		i.putExtra("command", "play");
-		//i.putExtra("device", "local");
-		
+		// i.putExtra("device", "local");
+
 		context.getApplicationContext().sendBroadcast(i);
 	}
 

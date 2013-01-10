@@ -1,6 +1,7 @@
 package service;
 
 import android.app.Service;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
@@ -8,6 +9,7 @@ import android.os.IBinder;
 public class detectJack extends Service {
 	public static final String ACTION_HANDSET = "android.intent.action.HEADSET_PLUG";
 	public static final String ACTION_BLUETOOTH = "android.bluetooth.headset.action.STATE_CHANGED";
+	public static final String ACTION_ICS_BLUETOOTH = "android.bluetooth.device.action.ACL_CONNECTED";
 	
 	private intentBroadcast listen;
 	@Override
@@ -17,13 +19,10 @@ public class detectJack extends Service {
 
 	@Override
 	public void onCreate() {
-		final IntentFilter theFilter1 = new IntentFilter(); 
-		final IntentFilter theFilter2 = new IntentFilter(); 
-        theFilter1.addAction(ACTION_HANDSET);
-        theFilter2.addAction(ACTION_BLUETOOTH);
         listen = new intentBroadcast();
-        this.registerReceiver(listen, theFilter1);
-        this.registerReceiver(listen, theFilter2);
+        this.registerReceiver(listen, new IntentFilter(ACTION_BLUETOOTH));
+        this.registerReceiver(listen, new IntentFilter(ACTION_HANDSET));
+        this.registerReceiver(listen, new IntentFilter(ACTION_ICS_BLUETOOTH));
 		super.onCreate();
 	}
 
