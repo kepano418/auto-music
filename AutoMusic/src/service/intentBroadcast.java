@@ -1,5 +1,6 @@
 package service;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
@@ -14,7 +15,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -99,8 +102,8 @@ public class intentBroadcast extends BroadcastReceiver {
 					}
 				}
 
-			} else if(detectJack.ACTION_ICS_BLUETOOTH.equals(intent
-							.getAction())){
+			} else if (detectJack.ACTION_ICS_BLUETOOTH.equals(intent
+					.getAction())) {
 				Cursor c = database.getOption(DataHandler.OPTION_BT);
 				c.moveToFirst();
 				if (c.getCount() == 1
@@ -139,7 +142,7 @@ public class intentBroadcast extends BroadcastReceiver {
 
 	private boolean detectIfRunning(Context c) {
 		ActivityManager activityManager = (ActivityManager) c
-				.getSystemService(c.ACTIVITY_SERVICE);
+				.getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningAppProcessInfo> procInfos = activityManager
 				.getRunningAppProcesses();
 		for (int i = 0; i < procInfos.size(); i++) {
@@ -150,13 +153,36 @@ public class intentBroadcast extends BroadcastReceiver {
 		return false;
 	}
 
-	private void sendIt(Context context) {
-		Intent i;
-		i = new Intent("com.android.music.musicservicecommand");
-		i.putExtra("command", "play");
-		// i.putExtra("device", "local");
+	private void sendIt(final Context context) {
+//		 Intent i;
+//		 i = new Intent("com.android.music.musicservicecommand");
+//		 i.putExtra("command", "play");
+//		
+//		 Log.e(TAG, "sending command 'Play'");
+//		 context.getApplicationContext().sendBroadcast(i);
+//		 
+		new Thread(new Runnable() {
+		    public void run() {
+		        try {
+		        	 AudioManager mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);    
 
-		context.getApplicationContext().sendBroadcast(i);
+		 		    while (!mAudioManager.isMusicActive()) {
+
+		 		    Intent i = new Intent("com.android.music.musicservicecommand");
+
+		 		    i.putExtra("command", "play");
+		 		    Log.e(TAG, "sending command 'Play'");
+		 		    context.getApplicationContext().sendBroadcast(i);
+		 		    Log.e(TAG, "'Play' sent");
+		 		    Thread.sleep(3000);
+		 		    }   
+		            
+		        } catch (InterruptedException e) {
+		            e.printStackTrace();
+		        }
+		       
+		    }
+		}).start();
 	}
 
 }
