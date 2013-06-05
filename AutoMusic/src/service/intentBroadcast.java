@@ -154,13 +154,6 @@ public class intentBroadcast extends BroadcastReceiver {
 	}
 
 	private void sendIt(final Context context) {
-//		 Intent i;
-//		 i = new Intent("com.android.music.musicservicecommand");
-//		 i.putExtra("command", "play");
-//		
-//		 Log.e(TAG, "sending command 'Play'");
-//		 context.getApplicationContext().sendBroadcast(i);
-//		 
 		new Thread(new Runnable() {
 		    public void run() {
 		        try {
