@@ -5,4 +5,5 @@
     <string name="onBootString">Start on Boot</string>
     <string name="serviceBluetoothDisplay">Auto play music when bluetooth headset is inserted</string>
     <string name="serviceDisplay">Detection Service is:</string>
+    <string name="serviceWiredOutDisplay">Pause music when headphones disconnected.  *Needs only if phone does not do it already</string>
 </resources>
