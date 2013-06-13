@@ -1,4 +1,4 @@
-package net.kepano.fragment.wired;
+package net.kepano.fragments;
 
 import net.kepano.automusic.AutoMusicActivity;
 import net.kepano.automusic.R;

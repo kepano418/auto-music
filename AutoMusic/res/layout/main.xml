@@ -7,21 +7,23 @@
     android:fillViewport="true"
     android:scrollbars="none"
     tools:context=".AutoMusicActivity" >
-
+
     <LinearLayout
+        android:id="@+id/parentLayout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="horizontal" >
-
+
         <fragment
+            android:id="@+id/wirefrag"
             android:name="net.kepano.fragment.wired.wireFrag"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout="@layout/wiredlayout" />
-
+
         <TableLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/TableLayout1"
+            android:id="@+id/servicetable"
             android:layout_width="321dp"
             android:layout_height="match_parent"
             android:orientation="vertical" >
@@ -62,12 +64,14 @@
                     android:layout_height="wrap_content" />
             </TableRow>
         </TableLayout>
-
+
         <fragment
+            android:id="@+id/bluetoothfrag"
             android:name="net.kepano.fragment.BluetoothList.bluetoothListFrag"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             tools:layout="@layout/bluetoothlistlayout" />
+
     </LinearLayout>
 
 </HorizontalScrollView>

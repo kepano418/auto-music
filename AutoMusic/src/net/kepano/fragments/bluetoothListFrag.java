@@ -1,4 +1,4 @@
-package net.kepano.fragment.BluetoothList;
+package net.kepano.fragments;
 
 import java.util.ArrayList;
 import java.util.Set;
