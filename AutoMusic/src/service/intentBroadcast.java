@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.kepano.database.DBAdapter;
 import net.kepano.database.DataHandler;
+import net.kepano.tools.tools;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.BroadcastReceiver;
@@ -96,7 +97,9 @@ public class intentBroadcast extends BroadcastReceiver {
 				// Below is the Bluetooth portion of detection
 				// ICS
 				// ///////////////////////////////////////////
-			} else if (detectJack.ACTION_ICS_BLUETOOTH.equals(intent
+			} 
+			
+			if (tools.isVersionICSorBetter() && detectJack.ACTION_ICS_BLUETOOTH.equals(intent
 					.getAction())) {
 				Cursor c = database.getOption(DataHandler.OPTION_BT);
 				c.moveToFirst();
