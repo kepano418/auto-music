@@ -23,10 +23,10 @@ public class detectJack extends Service {
 		listen = new intentBroadcast();
 
 		if (tools.isVersionICSorBetter())
-			this.registerReceiver(listen, new IntentFilter(ACTION_BLUETOOTH));
-		else
 			this.registerReceiver(listen,
 					new IntentFilter(ACTION_ICS_BLUETOOTH));
+		else
+			this.registerReceiver(listen, new IntentFilter(ACTION_BLUETOOTH));
 		this.registerReceiver(listen, new IntentFilter(ACTION_HANDSET));
 
 		super.onCreate();
