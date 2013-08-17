@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.view.KeyEvent;
 
 public class detectJack extends Service {
 	public static final String ACTION_HANDSET = "android.intent.action.HEADSET_PLUG";
@@ -41,4 +42,5 @@ public class detectJack extends Service {
 	@Override
 	public void onStart(Intent intent, int startid) {
 	}
+	 
 }

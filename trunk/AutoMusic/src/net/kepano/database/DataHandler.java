@@ -21,6 +21,7 @@ public class DataHandler extends SQLiteOpenHelper {
 	public static final String OPTION_WIRED = "wired";
 	public static final String OPTION_BT = "bt";
 	public static final String OPTION_STOP = "stop";
+	public static final String OPTION_BLUETOOTH_DELAY = "delay";
 
 	private static final int DATABASE_VERSION = 4;
 	private static final String DATABASE_NAME = "auto_music_app";

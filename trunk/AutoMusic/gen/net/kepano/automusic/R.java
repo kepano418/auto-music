@@ -18,30 +18,36 @@ public final class R {
     }
     public static final class id {
         public static final int TableLayout1=0x7f050000;
+        public static final int TableRow2=0x7f050004;
         public static final int TextView01=0x7f050002;
-        public static final int bluetoothList=0x7f050004;
-        public static final int bluetoothfrag=0x7f050011;
-        public static final int bottomtext=0x7f050007;
-        public static final int checkBox_OnBoot=0x7f05000d;
-        public static final int customlisticon=0x7f050005;
-        public static final int displayServiceOnBoot=0x7f05000c;
-        public static final int displayWireOffToggle=0x7f050017;
-        public static final int displayWireToggle=0x7f050014;
-        public static final int horizontalScrollView1=0x7f050008;
-        public static final int pager=0x7f050012;
-        public static final int parentLayout=0x7f050009;
-        public static final int serviceToggle=0x7f050010;
-        public static final int servicetable=0x7f05000b;
+        public static final int TextView02=0x7f050005;
+        public static final int TextView03=0x7f050009;
+        public static final int TextView04=0x7f050007;
+        public static final int bluetoothList=0x7f05000a;
+        public static final int bluetoothfrag=0x7f050017;
+        public static final int bottomtext=0x7f05000d;
+        public static final int checkBox_OnBoot=0x7f050013;
+        public static final int customlisticon=0x7f05000b;
+        public static final int delayDisplay=0x7f050006;
+        public static final int displayServiceOnBoot=0x7f050012;
+        public static final int displayWireOffToggle=0x7f05001d;
+        public static final int displayWireToggle=0x7f05001a;
+        public static final int horizontalScrollView1=0x7f05000e;
+        public static final int pager=0x7f050018;
+        public static final int parentLayout=0x7f05000f;
+        public static final int seekBar1=0x7f050008;
+        public static final int serviceToggle=0x7f050016;
+        public static final int servicetable=0x7f050011;
         public static final int tableRow1=0x7f050001;
-        public static final int tableRow2=0x7f05000e;
-        public static final int tableRow3=0x7f050013;
-        public static final int tableRow9=0x7f050016;
-        public static final int textView1=0x7f05000f;
+        public static final int tableRow2=0x7f050014;
+        public static final int tableRow3=0x7f050019;
+        public static final int tableRow9=0x7f05001c;
+        public static final int textView1=0x7f050015;
         public static final int toggleBluetooth=0x7f050003;
-        public static final int toggleWired=0x7f050015;
-        public static final int toggleWiredOut=0x7f050018;
-        public static final int toptext=0x7f050006;
-        public static final int wirefrag=0x7f05000a;
+        public static final int toggleWired=0x7f05001b;
+        public static final int toggleWiredOut=0x7f05001e;
+        public static final int toptext=0x7f05000c;
+        public static final int wirefrag=0x7f050010;
     }
     public static final class layout {
         public static final int bluetoothlistlayout=0x7f030000;
@@ -54,6 +60,9 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
+        public static final int delayString=0x7f040006;
+        public static final int lowDelay=0x7f040007;
+        public static final int maxDelay=0x7f040008;
         public static final int onBootString=0x7f040002;
         public static final int serviceBluetoothDisplay=0x7f040003;
         public static final int serviceDisplay=0x7f040004;

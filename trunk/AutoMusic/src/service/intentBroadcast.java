@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 
 public class intentBroadcast extends BroadcastReceiver {
 	private final String TAG = "kepano";
@@ -88,6 +89,14 @@ public class intentBroadcast extends BroadcastReceiver {
 									.equals(o.toString())) {
 						Log.e(TAG, "head phones attached");
 
+						c = database.getOption(DataHandler.OPTION_BLUETOOTH_DELAY);
+						c.moveToFirst();						
+						try {
+							Thread.sleep(c.getInt(0) * 1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						sendStartMusic(context);
 
 					}
@@ -116,7 +125,15 @@ public class intentBroadcast extends BroadcastReceiver {
 									c.getColumnIndex(DataHandler.TABLE_COL_B_ADDR))
 									.equals(o.toString())) {
 						Log.e(TAG, "head phones disconected");
-
+						
+						c = database.getOption(DataHandler.OPTION_BLUETOOTH_DELAY);
+						c.moveToFirst();						
+						try {
+							Thread.sleep(c.getInt(0) * 1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						sendStartMusic(context);
 
 					}
@@ -142,11 +159,11 @@ public class intentBroadcast extends BroadcastReceiver {
 	private void sendStartMusic(final Context context) {
 		new Thread(new Runnable() {
 			public void run() {
-				try {
+				//try {
 					AudioManager mAudioManager = (AudioManager) context
 							.getSystemService(Context.AUDIO_SERVICE);
 
-					while (!mAudioManager.isMusicActive()) {
+					if (!mAudioManager.isMusicActive()) {
 
 						Intent i = new Intent(
 								"com.android.music.musicservicecommand");
@@ -155,12 +172,12 @@ public class intentBroadcast extends BroadcastReceiver {
 						Log.e(TAG, "sending command 'Play'");
 						context.getApplicationContext().sendBroadcast(i);
 						Log.e(TAG, "'Play' sent");
-						Thread.sleep(5000);
+						//Thread.sleep(5000);
 					}
 
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				//} catch (InterruptedException e) {
+				//	e.printStackTrace();
+				//}
 
 			}
 		}).start();
@@ -173,5 +190,4 @@ public class intentBroadcast extends BroadcastReceiver {
 		Log.e(TAG, "sending command 'Pause'");
 		context.getApplicationContext().sendBroadcast(i);
 	}
-
 }
