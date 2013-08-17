@@ -20,27 +20,34 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class bluetoothListFrag extends Fragment {
 	private ListView lv;
 	private static DBAdapter database;
-	
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, 
-        Bundle savedInstanceState) {
-    	database = AutoMusicActivity.getDB();
-    	
-        // Inflate the layout for this fragment
-    	View view = inflater.inflate(R.layout.bluetoothlistlayout, container, false);
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		database = AutoMusicActivity.getDB();
+
+		// Inflate the layout for this fragment
+		View view = inflater.inflate(R.layout.bluetoothlistlayout, container,
+				false);
 		initBTCheckBox(view);
 		setBluetoothList(view);
+		setSeek(view);
 		return view;
-    }
-    
-    private void initBTCheckBox(View view) {
-		ToggleButton tb = (ToggleButton) view.findViewById(R.id.toggleBluetooth);
+	}
+
+	private void initBTCheckBox(View view) {
+		ToggleButton tb = (ToggleButton) view
+				.findViewById(R.id.toggleBluetooth);
 
 		Cursor c = database.getOption(DataHandler.OPTION_BT);
 		c.moveToFirst();
@@ -48,14 +55,14 @@ public class bluetoothListFrag extends Fragment {
 				&& c.getString(c.getColumnIndex(DataHandler.TABLE_COL_M_VALUE))
 						.equals("true"))
 			tb.setChecked(true);
-		
-		//data is not in there
-		//this is handled on first initialize
+
+		// data is not in there
+		// this is handled on first initialize
 		else if (c.getCount() == 0)
 			database.insertData(DataHandler.TABLE_M_NAME,
 					DataHandler.OPTION_BT, "false");
 
-		//on click change choice
+		// on click change choice
 		tb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton buttonView,
 					boolean isChecked) {
@@ -74,8 +81,8 @@ public class bluetoothListFrag extends Fragment {
 	private void setBluetoothList(View view) {
 		lv = (ListView) view.findViewById(R.id.bluetoothList);
 
-		//gets a list of all bluetooth enabled devices
-		//on the phone
+		// gets a list of all bluetooth enabled devices
+		// on the phone
 		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter
 				.getDefaultAdapter();
 		Set<BluetoothDevice> pairedDevices = mBluetoothAdapter
@@ -85,8 +92,8 @@ public class bluetoothListFrag extends Fragment {
 		for (BluetoothDevice bt : pairedDevices) {
 			bluetoothObjects bto = new bluetoothObjects(bt);
 
-			//see if bluetooth device is already
-			//enabled for auto start
+			// see if bluetooth device is already
+			// enabled for auto start
 			Cursor c = database.getBT(bt.getAddress());
 			c.moveToFirst();
 			if (c.getCount() == 1
@@ -96,30 +103,65 @@ public class bluetoothListFrag extends Fragment {
 				bto.setAutoStart(true);
 			s.add(bto);
 		}
-		final CustomListAdapter cAdapter = new CustomListAdapter(view.getContext(),
-				android.R.layout.simple_list_item_1, s); 
+		final CustomListAdapter cAdapter = new CustomListAdapter(
+				view.getContext(), android.R.layout.simple_list_item_1, s);
 		lv.setAdapter(cAdapter);
 
-		//set onclick to change the row
-		//also redraw the list so show change
+		// set onclick to change the row
+		// also redraw the list so show change
 		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> arg0, View arg1,
 					int position, long arg3) {
 
-				bluetoothObjects o = (bluetoothObjects) lv.getItemAtPosition(position);
-				if(o.getAutoStart()){
+				bluetoothObjects o = (bluetoothObjects) lv
+						.getItemAtPosition(position);
+				if (o.getAutoStart()) {
 					o.setAutoStart(false);
-					database.removeData(DataHandler.TABLE_BT_NAME, o.getAddr(), "");
-				}
-				else{
+					database.removeData(DataHandler.TABLE_BT_NAME, o.getAddr(),
+							"");
+				} else {
 					o.setAutoStart(true);
-					database.insertData(DataHandler.TABLE_BT_NAME, o.getAddr(), "");
+					database.insertData(DataHandler.TABLE_BT_NAME, o.getAddr(),
+							"");
 				}
 				cAdapter.notifyDataSetChanged();
 			}
 		});
 
 	}
-}
 
+	private void setSeek(final View view) {
+		SeekBar sb = (SeekBar) view.findViewById(R.id.seekBar1);
+		final TextView tv = (TextView) view.findViewById(R.id.delayDisplay);
+		sb.setMax(15);
+		Cursor c = database.getOption(DataHandler.OPTION_BLUETOOTH_DELAY);
+		if (!c.moveToFirst())
+			database.insertData(DataHandler.TABLE_M_NAME,
+					DataHandler.OPTION_BLUETOOTH_DELAY, sb.getProgress() + "");
+		c.requery();
+		c.moveToFirst();
+		sb.setProgress(c.getInt(0));
+		tv.setText(sb.getProgress() + "s");
+
+		sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			public void onStopTrackingTouch(SeekBar sBar) {
+				tv.setText(sBar.getProgress() + "s");
+				database.updateOption(DataHandler.TABLE_M_NAME,
+						DataHandler.OPTION_BLUETOOTH_DELAY, sBar.getProgress()
+								+ "");
+			}
+
+			public void onStartTrackingTouch(SeekBar sBar) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void onProgressChanged(SeekBar sBar, int progress,
+					boolean fromUser) {
+
+			}
+		});
+
+	}
+}
